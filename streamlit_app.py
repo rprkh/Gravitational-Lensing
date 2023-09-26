@@ -88,5 +88,8 @@ if uploaded_image is not None:
             st.write(model_prediction)
             st.write(class_prediction)
             st.write(confidence)
+        if selected_model == type_of_task[1]:
+            selected_model = get_model_options()
+            st.write(message)
 else:
     st.write("Please upload an image")
