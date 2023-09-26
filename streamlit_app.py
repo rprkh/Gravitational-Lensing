@@ -6,7 +6,9 @@ import cv2
 import platform
 import torch
 import torch.nn.functional as F
-from tasks.binary_substructure_classification_page import ViT_Base_Patch_16_224, get_model_options
+from tasks.binary_substructure_classification_page import get_model_options, ViT_Base_Patch_16_224
+from tasks.binary_substructure_classification_page import Swin_Base_Patch4_Window7_224, SwinEnsemble
+from tasks.binary_substructure_classification_page import Swin_s3_Base_224, Swinv2_cr_Base_224
 
 st.title("Gravitational Lensing")
 
@@ -22,7 +24,7 @@ def get_device():
     return message
 
 def binary_substructure_classification_image_processing(image):
-    image = cv2.resize(opencv_image, (224, 224))
+    image = cv2.resize(image, (224, 224))
     image = np.expand_dims(image, axis=0)
     image = np.transpose(image, (0, 3, 1, 2))
 
@@ -70,26 +72,22 @@ if uploaded_image is not None:
     st.image(image.resize((250, 250)), caption="Uploaded Image", use_column_width=False)
 
     message = get_device()
-    # st.write(message)
 
     if selected_option == type_of_task[0]:
         selected_model = get_model_options()
         st.write(message)
+
+        image = binary_substructure_classification_image_processing(opencv_image)
         
         if selected_model == "ViT_Base_Patch_16_224":
-            image = binary_substructure_classification_image_processing(opencv_image)
-
-            model = ViT_Base_Patch_16_224(2)
-            model = model.to(DEVICE)
-            model.load_state_dict(torch.load("C:/Users/rahil/Rahil/KJ Somaiya/Sem-VII/Projects/models/vit_base_patch16_224_epochs_20_batchsize_64_lr_0.0001.pth", map_location=torch.device("cpu")))
+            vit_model = ViT_Base_Patch_16_224(2)
+            vit_model = vit_model.to(DEVICE)
+            vit_model.load_state_dict(torch.load("models/vit_base_patch16_224_epochs_20_batchsize_64_lr_0.0001.pth", map_location=torch.device("cpu")))
             st.write("*Model loaded successfully*")
 
-            model_prediction, class_prediction, confidence = binary_substructure_classification_results(model, image)
+            model_prediction, class_prediction, confidence = binary_substructure_classification_results(vit_model, image)
             st.write(model_prediction)
             st.write(class_prediction)
             st.write(confidence)
-        if selected_model == type_of_task[1]:
-            selected_model = get_model_options()
-            st.write(message)
 else:
     st.write("Please upload an image")
