@@ -10,7 +10,12 @@ from tasks.binary_substructure_classification_page import (
     get_model_options_binary_classification,
     ViT_Base_Patch_16_224,
 )
-from tasks.dark_matter_halo_mass_prediction_page import get_model_options_halo_mass, EfficientNetB4, Convnext_Base, Inception_Resnet_V2
+from tasks.dark_matter_halo_mass_prediction_page import (
+    get_model_options_halo_mass,
+    EfficientNetB4,
+    Convnext_Base,
+    Inception_Resnet_V2,
+)
 
 st.title("Gravitational Lensing")
 
@@ -69,6 +74,7 @@ def dark_matter_halo_mass_prediction_image_processing(image):
 
     return image
 
+
 def dark_matter_halo_mass_prediction_regression_results(model, image):
     model.eval()
 
@@ -79,6 +85,7 @@ def dark_matter_halo_mass_prediction_regression_results(model, image):
         model_prediction = f"**Dark Matter Halo Mass**: {y_pred.item()}"
 
     return model_prediction
+
 
 st.sidebar.title("Navigation")
 uploaded_image = st.sidebar.file_uploader(
@@ -155,10 +162,17 @@ if uploaded_image is not None:
 
                 efficient_net_b4_model = EfficientNetB4(1)
                 efficient_net_b4_model = efficient_net_b4_model.to(DEVICE)
-                efficient_net_b4_model.load_state_dict(torch.load("models/dark_matter_halo_mass_prediction/efficientnet_b4_epochs_10_batchsize_128_lr_0.0005.pth", map_location=torch.device("cpu")))
+                efficient_net_b4_model.load_state_dict(
+                    torch.load(
+                        "models/dark_matter_halo_mass_prediction/efficientnet_b4_epochs_10_batchsize_128_lr_0.0005.pth",
+                        map_location=torch.device("cpu"),
+                    )
+                )
                 st.write("Model loaded successfully")
 
-                model_prediction = dark_matter_halo_mass_prediction_regression_results(efficient_net_b4_model, image)
+                model_prediction = dark_matter_halo_mass_prediction_regression_results(
+                    efficient_net_b4_model, image
+                )
                 st.write(model_prediction)
 
             if selected_model == "ConvNeXtBase":
@@ -166,10 +180,17 @@ if uploaded_image is not None:
 
                 convnext_base_model = Convnext_Base(1)
                 convnext_base_model = convnext_base_model.to(DEVICE)
-                convnext_base_model.load_state_dict(torch.load("models\dark_matter_halo_mass_prediction/convnext_base_epochs_25_batchsize_128_lr_5e-05.pth", map_location=torch.device("cpu")))
+                convnext_base_model.load_state_dict(
+                    torch.load(
+                        "models\dark_matter_halo_mass_prediction/convnext_base_epochs_25_batchsize_128_lr_5e-05.pth",
+                        map_location=torch.device("cpu"),
+                    )
+                )
                 st.write("Model loaded successfully")
 
-                model_prediction = dark_matter_halo_mass_prediction_regression_results(convnext_base_model, image)
+                model_prediction = dark_matter_halo_mass_prediction_regression_results(
+                    convnext_base_model, image
+                )
                 st.write(model_prediction)
 
             if selected_model == "InceptionResNetV2":
@@ -177,10 +198,17 @@ if uploaded_image is not None:
 
                 inception_resnet_v2_model = Inception_Resnet_V2(1)
                 inception_resnet_v2_model = inception_resnet_v2_model.to(DEVICE)
-                inception_resnet_v2_model.load_state_dict(torch.load("models/dark_matter_halo_mass_prediction/inception_resnet_v2_epochs_20_batchsize_128_lr_5e-05.pth", map_location=torch.device("cpu")))
+                inception_resnet_v2_model.load_state_dict(
+                    torch.load(
+                        "models/dark_matter_halo_mass_prediction/inception_resnet_v2_epochs_20_batchsize_128_lr_5e-05.pth",
+                        map_location=torch.device("cpu"),
+                    )
+                )
                 st.write("Model loaded successfully")
 
-                model_prediction = dark_matter_halo_mass_prediction_regression_results(inception_resnet_v2_model, image)
+                model_prediction = dark_matter_halo_mass_prediction_regression_results(
+                    inception_resnet_v2_model, image
+                )
                 st.write(model_prediction)
         except:
             st.write("Please upload another image")
