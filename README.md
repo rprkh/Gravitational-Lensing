@@ -1,1 +1,1 @@
-# Gravitational-Lensing
+# Gravitational Lensing
