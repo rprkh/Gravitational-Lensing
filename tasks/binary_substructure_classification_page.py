@@ -48,7 +48,7 @@ class ViT_Base_Patch_16_224(nn.Module):
         return x
 
 
-def get_model_options():
+def get_model_options_binary_classification():
     model_types = ["ViT_Base_Patch_16_224"]
     selected_model = st.radio("Select a model", model_types)
 

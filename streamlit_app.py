@@ -7,9 +7,10 @@ import platform
 import torch
 import torch.nn.functional as F
 from tasks.binary_substructure_classification_page import (
-    get_model_options,
+    get_model_options_binary_classification,
     ViT_Base_Patch_16_224,
 )
+from tasks.dark_matter_halo_mass_prediction_page import get_model_options_halo_mass, EfficientNetB4, Convnext_Base, Inception_Resnet_V2
 
 st.title("Gravitational Lensing")
 
@@ -40,8 +41,9 @@ def binary_substructure_classification_results(model, image):
     image = torch.tensor(image)
     image = image.to(DEVICE)
 
+    model.eval()
+
     with torch.no_grad():
-        model.eval()
         y_pred = model(image.float())
         _, predicted = torch.max(y_pred.data, 1)
         class_label = predicted.item()
@@ -59,9 +61,28 @@ def binary_substructure_classification_results(model, image):
         return model_prediction, class_prediction, confidence
 
 
+def dark_matter_halo_mass_prediction_image_processing(image):
+    image = np.expand_dims(image, axis=0)
+    image = np.transpose(image, (0, 3, 1, 2))
+    image = torch.tensor(image)
+    image = image.to(DEVICE)
+
+    return image
+
+def dark_matter_halo_mass_prediction_regression_results(model, image):
+    model.eval()
+
+    with torch.no_grad():
+        y_pred = model(image.float())
+        y_pred = y_pred.view(-1)
+        y_pred = y_pred.type(torch.float64)
+        model_prediction = f"**Dark Matter Halo Mass**: {y_pred.item()}"
+
+    return model_prediction
+
 st.sidebar.title("Navigation")
 uploaded_image = st.sidebar.file_uploader(
-    "Upload your image", type=["png", "jpg", "jpeg"]
+    "Upload your image", type=["png", "jpg", "jpeg", "npy"]
 )
 
 type_of_task = [
@@ -72,38 +93,96 @@ type_of_task = [
 selected_option = st.sidebar.radio("Select a task:", type_of_task)
 
 if uploaded_image is not None:
-    file_bytes = np.asarray(bytearray(uploaded_image.read()))
-    opencv_image = cv2.imdecode(file_bytes, cv2.IMREAD_COLOR)
+    file_name = uploaded_image.name
+    if file_name.endswith((".jpg", ".jpeg", ".png")):
+        try:
+            file_bytes = np.asarray(bytearray(uploaded_image.read()))
+            opencv_image = cv2.imdecode(file_bytes, cv2.IMREAD_COLOR)
 
-    image = Image.open(uploaded_image)
-    st.image(image.resize((250, 250)), caption="Uploaded Image", use_column_width=False)
+            image = Image.open(uploaded_image)
+            st.image(image, caption="Uploaded Image", use_column_width=True)
+        except:
+            st.write("Please upload another image")
+
+    if file_name.endswith((".npy")):
+        try:
+            image, mass = np.load(uploaded_image, allow_pickle=True)
+            fig, ax = plt.subplots()
+            ax.imshow(image)
+            plt.axis("off")
+            st.pyplot(fig)
+
+            image = np.expand_dims(image, axis=2)
+        except:
+            st.write("Please upload another image")
 
     message = get_device()
 
     if selected_option == type_of_task[0]:
-        selected_model = get_model_options()
+        selected_model = get_model_options_binary_classification()
         st.write(message)
+        try:
+            image = binary_substructure_classification_image_processing(opencv_image)
 
-        image = binary_substructure_classification_image_processing(opencv_image)
-
-        if selected_model == "ViT_Base_Patch_16_224":
-            vit_model = ViT_Base_Patch_16_224(2)
-            vit_model = vit_model.to(DEVICE)
-            vit_model.load_state_dict(
-                torch.load(
-                    "models/vit_base_patch16_224_epochs_20_batchsize_64_lr_0.0001.pth",
-                    map_location=torch.device("cpu"),
+            if selected_model == "ViT_Base_Patch_16_224":
+                vit_model = ViT_Base_Patch_16_224(2)
+                vit_model = vit_model.to(DEVICE)
+                vit_model.load_state_dict(
+                    torch.load(
+                        "models/binary_substructure_classification/vit_base_patch16_224_epochs_20_batchsize_64_lr_0.0001.pth",
+                        map_location=torch.device("cpu"),
+                    )
                 )
-            )
-            st.write("*Model loaded successfully*")
+                st.write("*Model loaded successfully*")
 
-            (
-                model_prediction,
-                class_prediction,
-                confidence,
-            ) = binary_substructure_classification_results(vit_model, image)
-            st.write(model_prediction)
-            st.write(class_prediction)
-            st.write(confidence)
+                (
+                    model_prediction,
+                    class_prediction,
+                    confidence,
+                ) = binary_substructure_classification_results(vit_model, image)
+                st.write(model_prediction)
+                st.write(class_prediction)
+                st.write(confidence)
+        except:
+            st.write("Please upload another image")
+
+    if selected_option == type_of_task[1]:
+        selected_model = get_model_options_halo_mass()
+        st.write(message)
+        try:
+            if selected_model == "EfficientNetB4":
+                image = dark_matter_halo_mass_prediction_image_processing(image)
+
+                efficient_net_b4_model = EfficientNetB4(1)
+                efficient_net_b4_model = efficient_net_b4_model.to(DEVICE)
+                efficient_net_b4_model.load_state_dict(torch.load("models/dark_matter_halo_mass_prediction/efficientnet_b4_epochs_10_batchsize_128_lr_0.0005.pth", map_location=torch.device("cpu")))
+                st.write("Model loaded successfully")
+
+                model_prediction = dark_matter_halo_mass_prediction_regression_results(efficient_net_b4_model, image)
+                st.write(model_prediction)
+
+            if selected_model == "ConvNeXtBase":
+                image = dark_matter_halo_mass_prediction_image_processing(image)
+
+                convnext_base_model = Convnext_Base(1)
+                convnext_base_model = convnext_base_model.to(DEVICE)
+                convnext_base_model.load_state_dict(torch.load("models\dark_matter_halo_mass_prediction/convnext_base_epochs_25_batchsize_128_lr_5e-05.pth", map_location=torch.device("cpu")))
+                st.write("Model loaded successfully")
+
+                model_prediction = dark_matter_halo_mass_prediction_regression_results(convnext_base_model, image)
+                st.write(model_prediction)
+
+            if selected_model == "InceptionResNetV2":
+                image = dark_matter_halo_mass_prediction_image_processing(image)
+
+                inception_resnet_v2_model = Inception_Resnet_V2(1)
+                inception_resnet_v2_model = inception_resnet_v2_model.to(DEVICE)
+                inception_resnet_v2_model.load_state_dict(torch.load("models/dark_matter_halo_mass_prediction/inception_resnet_v2_epochs_20_batchsize_128_lr_5e-05.pth", map_location=torch.device("cpu")))
+                st.write("Model loaded successfully")
+
+                model_prediction = dark_matter_halo_mass_prediction_regression_results(inception_resnet_v2_model, image)
+                st.write(model_prediction)
+        except:
+            st.write("Please upload another image")
 else:
     st.write("Please upload an image")
