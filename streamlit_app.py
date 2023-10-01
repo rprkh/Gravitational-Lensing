@@ -56,7 +56,7 @@ def binary_substructure_classification_results(model, image):
         model_prediction = f"**Model Prediction**: {class_label}"
 
         if class_label == 0:
-            class_prediction = "**Class**: No-Substructure"
+            class_prediction = "**Class**: No Substructure"
         if class_label == 1:
             class_prediction = "**Class**: Substructure"
 
@@ -107,11 +107,18 @@ def multiclass_substructure_clasification_results(model, image):
         class_label = predicted.item()
         model_prediction = f"**Model Prediction**: {class_label}"
 
+        if class_label == 0:
+            class_prediction = "**Class**: No Substructure"
+        if class_label == 1:
+            class_prediction = "**Class**: Vortex Substructure"
+        if class_label == 2:
+            class_prediction = "**Class**: Sphere Substructure"
+
         probs = F.softmax(y_pred, dim=1)
         final_prob = torch.max(probs)
         confidence = f"**Confidence**: {round(final_prob.item() * 100, 2)}%"
 
-    return model_prediction, confidence
+    return model_prediction, class_prediction, confidence
 
 st.sidebar.title("Navigation")
 uploaded_image = st.sidebar.file_uploader(
@@ -262,6 +269,11 @@ if uploaded_image is not None:
             )
             st.write("Model loaded successfully")
 
+            model_prediction, class_prediction, confidence = multiclass_substructure_clasification_results(densenet161, image)
+            st.write(model_prediction)
+            st.write(class_prediction)
+            st.write(confidence)
+
         if selected_model == "DenseNet201":
             densenet201 = DenseNet201(3)
             densenet201 = densenet201.to(DEVICE)
@@ -273,8 +285,9 @@ if uploaded_image is not None:
             )
             st.write("Model loaded successfully")
 
-            model_prediction, confidence = multiclass_substructure_clasification_results(densenet201, image)
+            model_prediction, class_prediction, confidence = multiclass_substructure_clasification_results(densenet201, image)
             st.write(model_prediction)
+            st.write(class_prediction)
             st.write(confidence)
 
         if selected_model == "MobileVitV2_150_384_in22ft1k":
@@ -288,6 +301,11 @@ if uploaded_image is not None:
             )
             st.write("Model loaded successfully")
 
+            model_prediction, class_prediction, confidence = multiclass_substructure_clasification_results(mobile_vit, image)
+            st.write(model_prediction)
+            st.write(class_prediction)
+            st.write(confidence)
+
         if selected_model == "DenseNet Ensemble":
             densenet_ensemble = DenseNetEnsemble(3, TransferLearningModelNew(3).to(DEVICE), DenseNet201(3).to(DEVICE))
             densenet_ensemble = densenet_ensemble.to(DEVICE)
@@ -299,6 +317,9 @@ if uploaded_image is not None:
             )
             st.write("Model loaded successfully")
 
-        
+            model_prediction, class_prediction, confidence = multiclass_substructure_clasification_results(densenet_ensemble, image)
+            st.write(model_prediction)
+            st.write(class_prediction)
+            st.write(confidence)
 else:
     st.write("Please upload an image")
