@@ -253,73 +253,76 @@ if uploaded_image is not None:
             st.write("***Predictions for this image are not possible. Please upload another image***")
 
     if selected_option == type_of_task[2]:
-        selected_model = get_model_options_multiclass_classification()
-        st.write(message)
+        try:
+            selected_model = get_model_options_multiclass_classification()
+            st.write(message)
 
-        image = multiclass_substructure_classification_image_processing(image)
+            image = multiclass_substructure_classification_image_processing(image)
 
-        if selected_model == "DenseNet161":
-            densenet161 = TransferLearningModelNew(3)
-            densenet161 = densenet161.to(DEVICE)
-            densenet161.load_state_dict(
-                torch.load(
-                    "models/multiclass_substructure_classification/densenet161_epochs_15_batchsize_64_lr_0.0001.bin",
-                    map_location=DEVICE,
+            if selected_model == "DenseNet161":
+                densenet161 = TransferLearningModelNew(3)
+                densenet161 = densenet161.to(DEVICE)
+                densenet161.load_state_dict(
+                    torch.load(
+                        "models/multiclass_substructure_classification/densenet161_epochs_15_batchsize_64_lr_0.0001.bin",
+                        map_location=DEVICE,
+                    )
                 )
-            )
-            st.write("Model loaded successfully")
+                st.write("Model loaded successfully")
 
-            model_prediction, class_prediction, confidence = multiclass_substructure_clasification_results(densenet161, image)
-            st.write(model_prediction)
-            st.write(class_prediction)
-            st.write(confidence)
+                model_prediction, class_prediction, confidence = multiclass_substructure_clasification_results(densenet161, image)
+                st.write(model_prediction)
+                st.write(class_prediction)
+                st.write(confidence)
 
-        if selected_model == "DenseNet201":
-            densenet201 = DenseNet201(3)
-            densenet201 = densenet201.to(DEVICE)
-            densenet201.load_state_dict(
-                torch.load(
-                    "models/multiclass_substructure_classification/densenet201_epochs_15_batchsize_64_lr_0.0001.bin",
-                    map_location=DEVICE
+            if selected_model == "DenseNet201":
+                densenet201 = DenseNet201(3)
+                densenet201 = densenet201.to(DEVICE)
+                densenet201.load_state_dict(
+                    torch.load(
+                        "models/multiclass_substructure_classification/densenet201_epochs_15_batchsize_64_lr_0.0001.bin",
+                        map_location=DEVICE
+                    )
                 )
-            )
-            st.write("Model loaded successfully")
+                st.write("Model loaded successfully")
 
-            model_prediction, class_prediction, confidence = multiclass_substructure_clasification_results(densenet201, image)
-            st.write(model_prediction)
-            st.write(class_prediction)
-            st.write(confidence)
+                model_prediction, class_prediction, confidence = multiclass_substructure_clasification_results(densenet201, image)
+                st.write(model_prediction)
+                st.write(class_prediction)
+                st.write(confidence)
 
-        if selected_model == "MobileVitV2_150_384_in22ft1k":
-            mobile_vit = MobileVitV2_150(3)
-            mobile_vit = mobile_vit.to(DEVICE)
-            mobile_vit.load_state_dict(
-                torch.load(
-                    "models/multiclass_substructure_classification/mobilevitv2_150_epochs_15_batchsize_32_lr_0.0001.bin",
-                    map_location=DEVICE
+            if selected_model == "MobileVitV2_150_384_in22ft1k":
+                mobile_vit = MobileVitV2_150(3)
+                mobile_vit = mobile_vit.to(DEVICE)
+                mobile_vit.load_state_dict(
+                    torch.load(
+                        "models/multiclass_substructure_classification/mobilevitv2_150_epochs_15_batchsize_32_lr_0.0001.bin",
+                        map_location=DEVICE
+                    )
                 )
-            )
-            st.write("Model loaded successfully")
+                st.write("Model loaded successfully")
 
-            model_prediction, class_prediction, confidence = multiclass_substructure_clasification_results(mobile_vit, image)
-            st.write(model_prediction)
-            st.write(class_prediction)
-            st.write(confidence)
+                model_prediction, class_prediction, confidence = multiclass_substructure_clasification_results(mobile_vit, image)
+                st.write(model_prediction)
+                st.write(class_prediction)
+                st.write(confidence)
 
-        if selected_model == "DenseNet Ensemble":
-            densenet_ensemble = DenseNetEnsemble(3, TransferLearningModelNew(3).to(DEVICE), DenseNet201(3).to(DEVICE))
-            densenet_ensemble = densenet_ensemble.to(DEVICE)
-            densenet_ensemble.load_state_dict(
-                torch.load(
-                    "models/multiclass_substructure_classification/ensemble_epochs_10_batchsize_32_lr_0.0001.bin",
-                    map_location=DEVICE
+            if selected_model == "DenseNet Ensemble":
+                densenet_ensemble = DenseNetEnsemble(3, TransferLearningModelNew(3).to(DEVICE), DenseNet201(3).to(DEVICE))
+                densenet_ensemble = densenet_ensemble.to(DEVICE)
+                densenet_ensemble.load_state_dict(
+                    torch.load(
+                        "models/multiclass_substructure_classification/ensemble_epochs_10_batchsize_32_lr_0.0001.bin",
+                        map_location=DEVICE
+                    )
                 )
-            )
-            st.write("Model loaded successfully")
+                st.write("Model loaded successfully")
 
-            model_prediction, class_prediction, confidence = multiclass_substructure_clasification_results(densenet_ensemble, image)
-            st.write(model_prediction)
-            st.write(class_prediction)
-            st.write(confidence)
+                model_prediction, class_prediction, confidence = multiclass_substructure_clasification_results(densenet_ensemble, image)
+                st.write(model_prediction)
+                st.write(class_prediction)
+                st.write(confidence)
+        else:
+            st.write("***Predictions for this image are not possible. Please upload another image***")
 else:
     st.write("Please upload an image")

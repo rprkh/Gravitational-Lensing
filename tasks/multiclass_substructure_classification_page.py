@@ -37,7 +37,7 @@ class TransferLearningModelNew(nn.Module):
         
     def forward(self, x):
         x = self.transfer_learning_model.forward_features(x)
-        x = x.view(-1, 2208 * 4 * 4)
+        x = x.reshape(-1, 2208 * 4 * 4)
         x = self.classifier(x)
         
         return x
