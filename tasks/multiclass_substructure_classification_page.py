@@ -119,31 +119,3 @@ def get_model_options_multiclass_classification():
     selected_model = st.radio("Select a model", model_types)
 
     return selected_model
-
-DEVICE = torch.device("cpu")
-
-model3 = TransferLearningModelNew(3)
-model3 = model3.to(DEVICE)
-model3.load_state_dict(torch.load(f"models/multiclass_substructure_classification/densenet161_epochs_15_batchsize_64_lr_0.0001.bin", map_location=torch.device("cpu")))
-print("Model loaded succesfully")
-
-model4 = MobileVitV2_150(3)
-model4 = model4.to(DEVICE)
-model4.load_state_dict(torch.load('models/multiclass_substructure_classification/mobilevitv2_150_epochs_15_batchsize_32_lr_0.0001.bin', map_location=torch.device("cpu")))
-print("Model loaded succesfully")
-
-model5 = DenseNet201(3)
-model5 = model5.to(DEVICE)
-model5.load_state_dict(torch.load('models/multiclass_substructure_classification/densenet201_epochs_15_batchsize_64_lr_0.0001.bin', map_location=torch.device("cpu")))
-print("Model loaded succesfully")
-
-modela = TransferLearningModelNew(3)
-modela = modela.to(DEVICE)
-
-modelb = DenseNet201(3)
-modelb = modelb.to(DEVICE)
-
-model = DenseNetEnsemble(3, modela, modelb)
-model = model.to(DEVICE)
-model.load_state_dict(torch.load(f'models/multiclass_substructure_classification/ensemble_epochs_10_batchsize_32_lr_0.0001.bin', map_location=torch.device("cpu")))
-print("Model loaded succesfully")
