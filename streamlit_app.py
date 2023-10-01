@@ -322,7 +322,7 @@ if uploaded_image is not None:
                 st.write(model_prediction)
                 st.write(class_prediction)
                 st.write(confidence)
-        else:
+        except:
             st.write("***Predictions for this image are not possible. Please upload another image***")
 else:
     st.write("Please upload an image")
