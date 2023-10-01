@@ -1,6 +1,6 @@
 # Gravitational Lensing
 
-Dark matter is a hypothetical form of matter, which does not interact with electromagnetic radiation. It does not reflect or emit light and is not directly observable by the human eye. However, it existence can be inferred by observing gravitational effects on visible matter, such as stars and galaxies. Gravitational lensing causes light to bend in the presence of a strong gravitational field. Due to this bending of light, distant objects may appear to be distorted or magnified. The study of these distorted shapes can aid researchers in identifying the distribution and location of dark matter. By analysing a variety of different images, it is possible to deduce the distribution of dark matter. Furthermore, by measuring the distortion geometry, the mass of the surrounding cluster of dark matter can be determined. This project performs 3 fundamental tasks related to dark matter and gravitational lensing:
+Dark matter is a hypothetical form of matter, which does not interact with electromagnetic radiation. It does not reflect or emit light and is not directly observable by the human eye. However, its existence can be inferred by observing gravitational effects on visible matter, such as stars and galaxies. Gravitational lensing causes light to bend in the presence of a strong gravitational field. Due to this bending of light, distant objects may appear to be distorted or magnified. The study of these distorted shapes can aid researchers in identifying the distribution and location of dark matter. By analysing a variety of different images, it is possible to deduce the distribution of dark matter. Furthermore, by measuring the distortion geometry, the mass of the surrounding cluster of dark matter can be determined. This project performs 3 fundamental tasks related to dark matter and gravitational lensing:
 - Binary Substructure Classification
 - Dark Matter Halo Mass Prediction
 - Multiclass Substructure Classification
@@ -92,7 +92,8 @@ Install the requirements
 pip install -r requirements.txt
 ```
 
-Download the trained models from the following Google Drive link: https://drive.google.com/drive/folders/1bEzLPteXPbo9fqSoHiutuf1FMVlUGCWf?usp=share_link
+Download the trained models from the following Google Drive link: 
+https://drive.google.com/drive/folders/1BBHnK_1K-DZ2Der2fWB6ABIKSDN5sCLr?usp=sharing
 
 Add these models to their respective folders within the `models` directory of the project
 
