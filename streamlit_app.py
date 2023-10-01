@@ -64,7 +64,7 @@ def binary_substructure_classification_results(model, image):
         final_prob = torch.max(probs)
         confidence = f"**Confidence**: {round(final_prob.item() * 100, 2)}%"
 
-        return model_prediction, class_prediction, confidence
+    return model_prediction, class_prediction, confidence
 
 
 def dark_matter_halo_mass_prediction_image_processing(image):
@@ -89,10 +89,29 @@ def dark_matter_halo_mass_prediction_regression_results(model, image):
 
 def multiclass_substructure_classification_image_processing(image):
     image = np.expand_dims(image, axis=0)
-    image = torch.tensor(np.transpose(image, (0, 3, 1, 2))).to(DEVICE)
+    image = np.transpose(image, (0, 3, 1, 2))
+    image = (torch.tensor(image)).to(DEVICE)
 
     return image
 
+
+def multiclass_substructure_clasification_results(model, image):
+    image = torch.tensor(image)
+    image = image.to(DEVICE)
+
+    model.eval()
+
+    with torch.no_grad():
+        y_pred = model(image.float())
+        _, predicted = torch.max(y_pred.data, 1)
+        class_label = predicted.item()
+        model_prediction = f"**Model Prediction**: {class_label}"
+
+        probs = F.softmax(y_pred, dim=1)
+        final_prob = torch.max(probs)
+        confidence = f"**Confidence**: {round(final_prob.item() * 100, 2)}%"
+
+    return model_prediction, confidence
 
 st.sidebar.title("Navigation")
 uploaded_image = st.sidebar.file_uploader(
@@ -120,13 +139,19 @@ if uploaded_image is not None:
 
     if file_name.endswith((".npy")):
         try:
-            image, mass = np.load(uploaded_image, allow_pickle=True)
+            if selected_option == type_of_task[1]:
+                image, _ = np.load(uploaded_image, allow_pickle=True)
+            if selected_option == type_of_task[2]:
+                image = np.load(uploaded_image, allow_pickle=True)
+                image = image.swapaxes(0, 1)
+                image = image.swapaxes(1, 2)
             fig, ax = plt.subplots()
             ax.imshow(image)
             plt.axis("off")
             st.pyplot(fig)
 
-            image = np.expand_dims(image, axis=2)
+            if selected_option == type_of_task[1]:
+                image = np.expand_dims(image, axis=2)
         except:
             st.write("***Predictions for this image are not possible. Please upload another image***")
 
@@ -248,6 +273,10 @@ if uploaded_image is not None:
             )
             st.write("Model loaded successfully")
 
+            model_prediction, confidence = multiclass_substructure_clasification_results(densenet201, image)
+            st.write(model_prediction)
+            st.write(confidence)
+
         if selected_model == "MobileVitV2_150_384_in22ft1k":
             mobile_vit = MobileVitV2_150(3)
             mobile_vit = mobile_vit.to(DEVICE)
@@ -269,5 +298,7 @@ if uploaded_image is not None:
                 )
             )
             st.write("Model loaded successfully")
+
+        
 else:
     st.write("Please upload an image")

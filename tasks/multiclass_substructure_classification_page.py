@@ -12,7 +12,7 @@ import streamlit as st
 
 @dataclass
 class CONFIG:
-    MODEL_NAMES = ['densenet161', 'mobilevitv2_150', 'mobilevitv2_150_384_in22ft1k']
+    MODEL_NAMES = ["densenet161", "mobilevitv2_150", "mobilevitv2_150_384_in22ft1k"]
     DROPOUT = 0.3
 
 class TransferLearningModelNew(nn.Module):
@@ -64,7 +64,7 @@ class DenseNet201(nn.Module):
         
     def forward(self, x):
         x = self.transfer_learning_model.forward_features(x)
-        x = x.view(-1, 1920 * 4 * 4)
+        x = x.reshape(-1, 1920 * 4 * 4)
         x = self.classifier(x)
         
         return x
