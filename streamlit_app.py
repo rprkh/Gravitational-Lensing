@@ -16,7 +16,13 @@ from tasks.dark_matter_halo_mass_prediction_page import (
     Convnext_Base,
     Inception_Resnet_V2,
 )
-from tasks.multiclass_substructure_classification_page import get_model_options_multiclass_classification, TransferLearningModelNew, DenseNet201, MobileVitV2_150, DenseNetEnsemble
+from tasks.multiclass_substructure_classification_page import (
+    get_model_options_multiclass_classification,
+    TransferLearningModelNew,
+    DenseNet201,
+    MobileVitV2_150,
+    DenseNetEnsemble,
+)
 
 st.title("Gravitational Lensing")
 
@@ -87,6 +93,7 @@ def dark_matter_halo_mass_prediction_regression_results(model, image):
 
     return model_prediction
 
+
 def multiclass_substructure_classification_image_processing(image):
     image = np.expand_dims(image, axis=0)
     image = np.transpose(image, (0, 3, 1, 2))
@@ -120,6 +127,7 @@ def multiclass_substructure_clasification_results(model, image):
 
     return model_prediction, class_prediction, confidence
 
+
 st.sidebar.title("Navigation")
 uploaded_image = st.sidebar.file_uploader(
     "Upload your image", type=["png", "jpg", "jpeg", "npy"]
@@ -142,7 +150,9 @@ if uploaded_image is not None:
             image = Image.open(uploaded_image)
             st.image(image, caption="Uploaded Image", use_column_width=True)
         except:
-            st.write("***Predictions for this image are not possible. Please upload another image***")
+            st.write(
+                "***Predictions for this image are not possible. Please upload another image***"
+            )
 
     if file_name.endswith((".npy")):
         try:
@@ -160,7 +170,9 @@ if uploaded_image is not None:
             if selected_option == type_of_task[1]:
                 image = np.expand_dims(image, axis=2)
         except:
-            st.write("***Predictions for this image are not possible. Please upload another image***")
+            st.write(
+                "***Predictions for this image are not possible. Please upload another image***"
+            )
 
     message = get_device()
 
@@ -190,7 +202,9 @@ if uploaded_image is not None:
                 st.write(class_prediction)
                 st.write(confidence)
         except:
-            st.write("***Predictions for this image are not possible. Please upload another image***")
+            st.write(
+                "***Predictions for this image are not possible. Please upload another image***"
+            )
 
     if selected_option == type_of_task[1]:
         selected_model = get_model_options_halo_mass()
@@ -250,7 +264,9 @@ if uploaded_image is not None:
                 )
                 st.write(model_prediction)
         except:
-            st.write("***Predictions for this image are not possible. Please upload another image***")
+            st.write(
+                "***Predictions for this image are not possible. Please upload another image***"
+            )
 
     if selected_option == type_of_task[2]:
         try:
@@ -270,7 +286,11 @@ if uploaded_image is not None:
                 )
                 st.write("Model loaded successfully")
 
-                model_prediction, class_prediction, confidence = multiclass_substructure_clasification_results(densenet161, image)
+                (
+                    model_prediction,
+                    class_prediction,
+                    confidence,
+                ) = multiclass_substructure_clasification_results(densenet161, image)
                 st.write(model_prediction)
                 st.write(class_prediction)
                 st.write(confidence)
@@ -281,12 +301,16 @@ if uploaded_image is not None:
                 densenet201.load_state_dict(
                     torch.load(
                         "models/multiclass_substructure_classification/densenet201_epochs_15_batchsize_64_lr_0.0001.bin",
-                        map_location=DEVICE
+                        map_location=DEVICE,
                     )
                 )
                 st.write("Model loaded successfully")
 
-                model_prediction, class_prediction, confidence = multiclass_substructure_clasification_results(densenet201, image)
+                (
+                    model_prediction,
+                    class_prediction,
+                    confidence,
+                ) = multiclass_substructure_clasification_results(densenet201, image)
                 st.write(model_prediction)
                 st.write(class_prediction)
                 st.write(confidence)
@@ -297,32 +321,46 @@ if uploaded_image is not None:
                 mobile_vit.load_state_dict(
                     torch.load(
                         "models/multiclass_substructure_classification/mobilevitv2_150_epochs_15_batchsize_32_lr_0.0001.bin",
-                        map_location=DEVICE
+                        map_location=DEVICE,
                     )
                 )
                 st.write("Model loaded successfully")
 
-                model_prediction, class_prediction, confidence = multiclass_substructure_clasification_results(mobile_vit, image)
+                (
+                    model_prediction,
+                    class_prediction,
+                    confidence,
+                ) = multiclass_substructure_clasification_results(mobile_vit, image)
                 st.write(model_prediction)
                 st.write(class_prediction)
                 st.write(confidence)
 
             if selected_model == "DenseNet Ensemble":
-                densenet_ensemble = DenseNetEnsemble(3, TransferLearningModelNew(3).to(DEVICE), DenseNet201(3).to(DEVICE))
+                densenet_ensemble = DenseNetEnsemble(
+                    3, TransferLearningModelNew(3).to(DEVICE), DenseNet201(3).to(DEVICE)
+                )
                 densenet_ensemble = densenet_ensemble.to(DEVICE)
                 densenet_ensemble.load_state_dict(
                     torch.load(
                         "models/multiclass_substructure_classification/ensemble_epochs_10_batchsize_32_lr_0.0001.bin",
-                        map_location=DEVICE
+                        map_location=DEVICE,
                     )
                 )
                 st.write("Model loaded successfully")
 
-                model_prediction, class_prediction, confidence = multiclass_substructure_clasification_results(densenet_ensemble, image)
+                (
+                    model_prediction,
+                    class_prediction,
+                    confidence,
+                ) = multiclass_substructure_clasification_results(
+                    densenet_ensemble, image
+                )
                 st.write(model_prediction)
                 st.write(class_prediction)
                 st.write(confidence)
         except:
-            st.write("***Predictions for this image are not possible. Please upload another image***")
+            st.write(
+                "***Predictions for this image are not possible. Please upload another image***"
+            )
 else:
     st.write("Please upload an image")
