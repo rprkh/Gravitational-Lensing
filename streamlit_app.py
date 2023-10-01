@@ -16,6 +16,7 @@ from tasks.dark_matter_halo_mass_prediction_page import (
     Convnext_Base,
     Inception_Resnet_V2,
 )
+from tasks.multiclass_substructure_classification_page import get_model_options_multiclass_classification, TransferLearningModelNew, DenseNet201, MobileVitV2_150, DenseNetEnsemble
 
 st.title("Gravitational Lensing")
 
@@ -86,6 +87,12 @@ def dark_matter_halo_mass_prediction_regression_results(model, image):
 
     return model_prediction
 
+def multiclass_substructure_classification_image_processing(image):
+    image = np.expand_dims(image, axis=0)
+    image = torch.tensor(np.transpose(image, (0, 3, 1, 2))).to(DEVICE)
+
+    return image
+
 
 st.sidebar.title("Navigation")
 uploaded_image = st.sidebar.file_uploader(
@@ -109,7 +116,7 @@ if uploaded_image is not None:
             image = Image.open(uploaded_image)
             st.image(image, caption="Uploaded Image", use_column_width=True)
         except:
-            st.write("Please upload another image")
+            st.write("***Predictions for this image are not possible. Please upload another image***")
 
     if file_name.endswith((".npy")):
         try:
@@ -121,7 +128,7 @@ if uploaded_image is not None:
 
             image = np.expand_dims(image, axis=2)
         except:
-            st.write("Please upload another image")
+            st.write("***Predictions for this image are not possible. Please upload another image***")
 
     message = get_device()
 
@@ -137,7 +144,7 @@ if uploaded_image is not None:
                 vit_model.load_state_dict(
                     torch.load(
                         "models/binary_substructure_classification/vit_base_patch16_224_epochs_20_batchsize_64_lr_0.0001.pth",
-                        map_location=torch.device("cpu"),
+                        map_location=DEVICE,
                     )
                 )
                 st.write("*Model loaded successfully*")
@@ -151,7 +158,7 @@ if uploaded_image is not None:
                 st.write(class_prediction)
                 st.write(confidence)
         except:
-            st.write("Please upload another image")
+            st.write("***Predictions for this image are not possible. Please upload another image***")
 
     if selected_option == type_of_task[1]:
         selected_model = get_model_options_halo_mass()
@@ -165,7 +172,7 @@ if uploaded_image is not None:
                 efficient_net_b4_model.load_state_dict(
                     torch.load(
                         "models/dark_matter_halo_mass_prediction/efficientnet_b4_epochs_10_batchsize_128_lr_0.0005.pth",
-                        map_location=torch.device("cpu"),
+                        map_location=DEVICE,
                     )
                 )
                 st.write("Model loaded successfully")
@@ -183,7 +190,7 @@ if uploaded_image is not None:
                 convnext_base_model.load_state_dict(
                     torch.load(
                         "models\dark_matter_halo_mass_prediction/convnext_base_epochs_25_batchsize_128_lr_5e-05.pth",
-                        map_location=torch.device("cpu"),
+                        map_location=DEVICE,
                     )
                 )
                 st.write("Model loaded successfully")
@@ -201,7 +208,7 @@ if uploaded_image is not None:
                 inception_resnet_v2_model.load_state_dict(
                     torch.load(
                         "models/dark_matter_halo_mass_prediction/inception_resnet_v2_epochs_20_batchsize_128_lr_5e-05.pth",
-                        map_location=torch.device("cpu"),
+                        map_location=DEVICE,
                     )
                 )
                 st.write("Model loaded successfully")
@@ -211,6 +218,56 @@ if uploaded_image is not None:
                 )
                 st.write(model_prediction)
         except:
-            st.write("Please upload another image")
+            st.write("***Predictions for this image are not possible. Please upload another image***")
+
+    if selected_option == type_of_task[2]:
+        selected_model = get_model_options_multiclass_classification()
+        st.write(message)
+
+        image = multiclass_substructure_classification_image_processing(image)
+
+        if selected_model == "DenseNet161":
+            densenet161 = TransferLearningModelNew(3)
+            densenet161 = densenet161.to(DEVICE)
+            densenet161.load_state_dict(
+                torch.load(
+                    "models/multiclass_substructure_classification/densenet161_epochs_15_batchsize_64_lr_0.0001.bin",
+                    map_location=DEVICE,
+                )
+            )
+            st.write("Model loaded successfully")
+
+        if selected_model == "DenseNet201":
+            densenet201 = DenseNet201(3)
+            densenet201 = densenet201.to(DEVICE)
+            densenet201.load_state_dict(
+                torch.load(
+                    "models/multiclass_substructure_classification/densenet201_epochs_15_batchsize_64_lr_0.0001.bin",
+                    map_location=DEVICE
+                )
+            )
+            st.write("Model loaded successfully")
+
+        if selected_model == "MobileVitV2_150_384_in22ft1k":
+            mobile_vit = MobileVitV2_150(3)
+            mobile_vit = mobile_vit.to(DEVICE)
+            mobile_vit.load_state_dict(
+                torch.load(
+                    "models/multiclass_substructure_classification/mobilevitv2_150_epochs_15_batchsize_32_lr_0.0001.bin",
+                    map_location=DEVICE
+                )
+            )
+            st.write("Model loaded successfully")
+
+        if selected_model == "DenseNet Ensemble":
+            densenet_ensemble = DenseNetEnsemble(3, TransferLearningModelNew(3).to(DEVICE), DenseNet201(3).to(DEVICE))
+            densenet_ensemble = densenet_ensemble.to(DEVICE)
+            densenet_ensemble.load_state_dict(
+                torch.load(
+                    "models/multiclass_substructure_classification/ensemble_epochs_10_batchsize_32_lr_0.0001.bin",
+                    map_location=DEVICE
+                )
+            )
+            st.write("Model loaded successfully")
 else:
     st.write("Please upload an image")
