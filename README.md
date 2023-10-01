@@ -92,6 +92,11 @@ Install the requirements
 pip install -r requirements.txt
 ```
 
+Run the following command
+```bash
+mkdir "models\binary_substructure_classification" "models\dark_matter_halo_mass_prediction" "models\multiclass_substructure_classification"
+```
+
 Download the trained models from the following Google Drive link: 
 https://drive.google.com/drive/folders/1BBHnK_1K-DZ2Der2fWB6ABIKSDN5sCLr?usp=sharing
 
