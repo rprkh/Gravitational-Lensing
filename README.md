@@ -7,9 +7,9 @@ Dark matter is a hypothetical form of matter, which does not interact with elect
 
 # Binary Substructure Classification
 
-| Deep Learning Model                                 | Epochs | Batch Size | Learning Rate | ROC AUC (OVO) | ROC AUC (OVR) |
-| :-------------------------------------------------- | :----- | :--------- | :------------ | :------------ | :------------ |
-| ViT_Base_Patch_16_224                               | 20     | 64         | 0.0001        | 0.99800       | 0.99800       |
+| Deep Learning Model                                 | Epochs | Batch Size | Learning Rate | ROC AUC |
+| :-------------------------------------------------- | :----- | :--------- | :------------ | :------ |
+| ViT_Base_Patch_16_224                               | 20     | 64         | 0.0001        | 0.99800 |
 
 ### Results for ViT_Base_Patch_16_224 (20 Epochs):
 
@@ -43,12 +43,12 @@ Dark matter is a hypothetical form of matter, which does not interact with elect
 
 ### Models Used:
 
-| Deep Learning Model                         | Epochs | Batch Size | Learning Rate | ROC AUC (OVO) | ROC AUC (OVR) |
+| Deep Learning Model                         | Epochs | Batch Size | Learning Rate | ROC AUC (OvO) | ROC AUC (OvR) |
 | :------------------------------------------ | :----- | :--------- | :------------ | :------------ | :------------ |
-| DenseNet161                                 | 15     | 64         | 0.0001        | 0.98          | 0.98      |
-| MobileVitV2_150_384_in22ft1k                | 15     | 32         | 0.0001        | 0.95          | 0.95      |
-| DenseNet201                                 | 15     | 64         | 0.0001        | 0.97          | 0.97      |
-| Ensemble_DenseNet161_DenseNet201            | 10     | 32         | 0.0001        | 0.98          | 0.98      |
+| DenseNet161                                 | 15     | 64         | 0.0001        | 0.98          | 0.98          |
+| MobileVitV2_150_384_in22ft1k                | 15     | 32         | 0.0001        | 0.95          | 0.95          |
+| DenseNet201                                 | 15     | 64         | 0.0001        | 0.97          | 0.97          |
+| Ensemble_DenseNet161_DenseNet201            | 10     | 32         | 0.0001        | 0.98          | 0.98          |
 
 ### Results for DenseNet161 (15 Epochs):
 
