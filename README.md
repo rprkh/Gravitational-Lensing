@@ -98,7 +98,7 @@ mkdir "models\binary_substructure_classification" "models\dark_matter_halo_mass_
 ```
 
 Download the trained models from the following Google Drive link: 
-https://drive.google.com/drive/folders/1BBHnK_1K-DZ2Der2fWB6ABIKSDN5sCLr?usp=sharing
+https://drive.google.com/drive/folders/1NAeesQqyHlF6mu7Uv8sXiZx5eaRC3JBy?usp=sharing
 
 Add these models to their respective folders within the `models` directory of the project
 
